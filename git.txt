@@ -1,0 +1,113 @@
+安装git：
+sudo apt-get install git
+如果是其他Linux版本，可以直接通过源码安装。先从Git官网下载源码，然后解压，依次输入：./config，make，sudo make install这几个命令安装就好了。
+windows下载地址：https://git-for-windows.github.io/  默认安装即可
+
+设置git：
+git config --global user.name "aike"
+git config --global user.email "zhangak@mail.taiji.com.cn"
+git config --global color.ui true
+
+
+创建版本库：
+1、新建目录；2、切换到目录；3、执行初始化命令（git init）
+
+命令：
+工作区文件添加到暂存区：git add filename1 filename2...
+暂存区文件提交到仓库：git commit -m "注释"
+仓库当前状态：git status
+查看文件修改的内容：git diff filename
+查看提交历史命令：git reflog  、  git log
+回到上几次提交的版本：git reset --hard HEAD^、git reset --hard HEAD~100
+回到commit_id提交的版本：git reset --hard commit_id
+丢弃工作区内容修改：git checkout -- filename【暂存区内容回退到工作区的内容，针对未保存到暂存区的文件】
+撤销暂存区修改内容：git reset HEAD filename【针对已经保存到暂存区的文件】
+删除文件：git rm filename
+
+远程仓库：
+生成SSH Key： ssh-keygen -t rsa -C "zhangak@mail.taiji.com.cn"
+关联远程库：  git remote add originname git@github.com:zhangaike/learn1.git
+推送master分支的所有内容：git push originname master
+远程库与本地库合并：      git pull --rebase originname master
+从远程库克隆至本地库：    git clone git@github.com:zhangaike/learn1.git【git clone https://github.com/zhangaike/learn1.git】
+
+分支：
+查看分支：git branch
+创建分支：git branch branchname
+切换分支：git checkout branchname
+创建+切换分支：git checkout -b branchname
+合并某分支：git merge branchname【默认fast forward模式：删掉分支后，会丢掉分支信息】
+保留分支记录合并方式：git merge --no-ff -m "注释" branchname
+删除分支：git branch -d branchname
+查看分支合并情况：git log --graph --pretty=oneline --abbrev-commit
+
+Bug分支：
+储藏工作现场：git stash
+查看储藏工作现场列表：git stash list
+恢复工作现场：git stash apply【git stash apply ID】
+删除工作现场：git stash drop【git stash drop ID】
+恢复并删除：git stash pop
+
+Feature分支：
+新模块最好在分支上开发
+丢弃一个未被合并的分支：git branch D branchname
+
+多人协作：
+master主分支
+dev开发分支
+bug本地修改bug分支
+feature新模块分支
+克隆：git clone git@github.com:zhangaike/learn1.git【默认master分支】
+在本地创建和远程分支对应dev分支：git checkout -b dev origin/dev
+本地dev分支和远程dev分支关联：git branch --set-upstream dev origin/dev
+查看远程库信息：git remote -v
+推送本地分支：git push origin branchname【git pull】
+本地库合并远程库：git pull【git pull --rebase originname master】
+
+标签管理：
+  当前位置创建标签：git tag name 
+  根据commitid创建标签：git tag name commit_id
+  创建带注释的标签：git tag -a name -m "注释" commit_id
+查看所有标签列表：git tag
+查看标签详细信息：git show name
+推送标签到远程库：git push origin name
+一次推送多个标签：git push origin --tags
+删除本地库标签：git tag -d name
+删除远程库标签：git push origin :refs/tags/tagname
+
+开源共享模式【eg：https://github.com/twbs/bootstrap】：
+1、在自己账号克隆bootstrap【Fork按钮】
+2、从自己账号克隆至本地
+3、将自己账号代码pull request给bootstrap
+
+忽略特殊文件：
+新建一个.gitignore文件（*.bat；*.class等文件）
+提交至本地库中
+
+配置别名:
+global作用当前用户，不加global只对当前仓库有用：
+例如：用st标识status，co表示checkout，ci表示commit，br表示branch
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.br branch
+git config --global alias.st status
+别名代替某一段：
+git config --global alias.unstage 'reset HEAD'
+	eg：git unstage filename【git reset HEAD filename】
+git config --global alias.last 'log -1'
+	eg：git last【git log -1】
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+删除别名：
+当前仓库配置文件路径：.git/config
+当前用户配置文件路径：C:/Users/AIKE/config
+
+搭建git服务器（Ubuntu、Debian）：
+1、安装git：$ sudo apt-get install git
+2、创建一个git用户：sudo adduser git
+3、创建证书登录：收集公钥导入：/home/git/.ssh/authorized_keys文件（一行一个）
+4、初始化Git仓库：sudo git init --bare sample.git（裸仓库没有工作区）
+5、处于安全考虑git用户禁用shell登录：编辑/etc/passwd文件，git:x:1001:1001:,,,:/home/git:/bin/bash改为
+git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+6、克隆远程仓库
+
+管理公钥：Gitosis工具
